@@ -109,18 +109,23 @@ def amortization(remain_balance, extra, interest_rate, years, start_year,start_m
     return monthly_schedule,yearly_schedule,months_saved,total_interest_saved,total_interest,total_principal,final_month,final_year
 
 def generate_pie_chart(total_principal,total_interest):
+    if total_interest <=0 or total_principal <=0:
+        return "Error: Total interest or principal is zero"
+    
     fig = Figure()
-    ax = fig.add_subplot(1, 1, 1)
-    
-    labels = ['Principal', 'Interest']
-    sizes = [total_principal, total_interest]
-    colors = ['#66b3ff', '#ff9999']
-    
-    ax.pie(sizes, labels=labels, autopct='%1.1f%%', colors=colors, startangle=140)
+    ax = fig.add_subplot(111)
+    ax.pie(
+        [total_principal, total_interest],
+        labels=['Principal', 'Interest'],
+        autopct='%1.1f%%',
+        startangle=90,
+        colors=['#66b3ff', '#ff9999']
+    )
     ax.axis('equal')
 
     img = io.BytesIO()
     FigureCanvas(fig).print_png(img)  # Save the figure in memory
+    img.seek(0)
     return base64.b64encode(img.getvalue()).decode('utf-8')
 
 def generate_line_chart(schedule):
@@ -142,6 +147,7 @@ def generate_line_chart(schedule):
 
     img = io.BytesIO()
     FigureCanvas(fig).print_png(img)  # Save the figure in memory
+    img.seek(0)
     return base64.b64encode(img.getvalue()).decode('utf-8')
 
 @app.route('/calculate', methods=['POST'])
@@ -163,7 +169,7 @@ def calculate():
 
         monthly_schedule,yearly_schedule,month_saved,total_interest_saved,total_interest,total_principal,final_month,final_year = amortization(loan_amount,extra,interest_rate,years,start_year,start_month)
 
-        pie_chart = generate_pie_chart(total_principal,total_interest)
+        pie_chart = generate_pie_chart(round(total_principal,2),round(total_interest,2))
 
         line_chart = generate_line_chart(yearly_schedule)
 
