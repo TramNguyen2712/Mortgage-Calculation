@@ -161,7 +161,7 @@ def calculate():
         
         monthly_payment = calculate_monthly_payment(loan_amount,interest_rate,years)
 
-        monthly_schedule,yearly_schedule,month_saved,total_interest_saved,total_interest,total_principal,current_date = amortization(loan_amount,extra,interest_rate,years,start_year,start_month)
+        monthly_schedule,yearly_schedule,month_saved,total_interest_saved,total_interest,total_principal,final_month,final_year = amortization(loan_amount,extra,interest_rate,years,start_year,start_month)
 
         pie_chart = generate_pie_chart(total_principal,total_interest)
 
@@ -170,8 +170,8 @@ def calculate():
         total_mortgage_payments = total_interest + loan_amount
         
         return render_template('result.html', monthly_payment=round(monthly_payment,2), loan_amount = loan_amount, total_interest = round(total_interest,2), down = down, 
-                               total_mortgage_payments = round(total_mortgage_payments,2), total_interest_saved=round(total_interest_saved, 2),month_saved = month_saved, schedule = monthly_schedule, 
-                               current_date=current_date,pie_chart=pie_chart,line_chart=line_chart)
+                               total_mortgage_payments = round(total_mortgage_payments,2), total_interest_saved=round(total_interest_saved, 2),month_saved = month_saved, monthly_schedule = monthly_schedule, 
+                               yearly_schedule = yearly_schedule, final_month=final_month,final_year=final_year,pie_chart=pie_chart,line_chart=line_chart)
 
     except Exception as e:
         return f"Error: {e}"
@@ -180,13 +180,17 @@ def calculate():
 
 def download_csv():
 
+    schedule_type = request.form.get("schedule_type")
+    
     schedule_data = request.form.get("schedule")
 
     df = pd.DataFrame(eval(schedule_data))
 
     csv_file = df.to_csv(index=False)
 
-    return Response(csv_file,mimetype="text/csv",headers={"Content-Disposition": 'attachment; filename="amortization_monthly.csv"'})
+    filename = "amortization_schedule_yearly.csv" if schedule_type == "yearly" else "amortization_schedule_monthly.csv"
+
+    return Response(csv_file,mimetype="text/csv",headers={"Content-Disposition": f'attachment; filename={filename}'})
 
 
 if __name__=='__main__':

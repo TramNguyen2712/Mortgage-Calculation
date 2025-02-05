@@ -27,7 +27,7 @@
         <p>Total Interest: ${{total_interest}}</p>
         <p>Down Payment: ${{down}}</p>
         <p>Total Mortgage Payments: ${{total_mortgage_payments}}</p>
-        <p>Mortgage Payoff Date: </p>
+        <p>Mortgage Payoff Date: {{final_month}}. {{final_year}}</p>
 
         <h3>Principal vs Interest</h3>
         <img src="data:image/png;base4,{{pie_chart}}" alt="Principal vs Interest Pie Chart">
@@ -35,8 +35,27 @@
         <h3>Loan Progress</h3>
         <img src="data:image/png;base64,{{line_chart}}" alt="Loan Progress">
 
-        <h2>Amortization Schedule</h2>
-        <table>
+        
+        <h2>Yearly Amortization Schedule</h2>
+        <table border="1">
+            <tr>
+                <th>Year</th>
+                <th>Total Interest Paid</th>
+                <th>Total Principal Paid</th>
+                <th>Remaining Balance</th>
+            </tr>
+            {% for row in yearly_schedule %}
+            <tr>
+                <td>{{ row.Year }}</td>
+                <td>${{ row["Total Interest"] }}</td>
+                <td>${{ row["Total Principal"] }}</td>
+                <td>${{ row["Remaining Balance"] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <h2>Monthly Amortization Schedule</h2>
+        <table border="1">
             <tr>
                 <th>Month</th>
                 <th>Payment</th>
@@ -45,7 +64,7 @@
                 <th>Principal</th>
                 <th>Balance</th>
             </tr>
-            {% for row in schedule %}
+            {% for row in monthly_schedule %}
             <tr>
                 <td>{{ row.Month }}</td>
                 <td>{{ row.Payment }}</td>
@@ -58,9 +77,17 @@
         </table>
         <a href="/">Back</a>
         <form action="/download_csv" method="post">
-            <input type="hidden" name="schedule" value="{{ schedule }}">
-            <button type="submit">Download CSV</button>
+            <input type="hidden" name="schedule_type" value="monthly">
+            <input type="hidden" name="schedule" value="{{ monthly_schedule }}">
+            <button type="submit">Download Monthly CSV</button>
         </form>
+        
+        <form action="/download_csv" method="post">
+            <input type="hidden" name="schedule_type" value="yearly">
+            <input type="hidden" name="schedule" value="{{ yearly_schedule }}">
+            <button type="submit">Download Yearly CSV</button>
+        </form>
+        
         
     </body>
 
