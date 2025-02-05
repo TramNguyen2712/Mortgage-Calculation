@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>Mortgage Monthly Payment Result</title>
+    </head>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <body>
+        <h1>Mortgage Payment Details</h1>
+        <p><strong>Monthly_payment ${{monthly_payment}}</strong></p>
+        <p>Loan Amount: ${{loan_amount}}</p>
+        <p>Total Interest: ${{total_interest}}</p>
+        <p>Down Payment: ${{down}}</p>
+        <p>Total Mortgage Payments: ${{total_mortgage_payments}}</p>
+        <p>Mortgage Payoff Date: </p>
+
+        <h3>Principal vs Interest</h3>
+        <img src="data:image/png;base4,{{pie_chart}}" alt="Principal vs Interest Pie Chart">
+
+        <h3>Loan Progress</h3>
+        <img src="data:image/png;base64,{{line_chart}}" alt="Loan Progress">
+
+        <h2>Amortization Schedule</h2>
+        <table>
+            <tr>
+                <th>Month</th>
+                <th>Payment</th>
+                <th>Date</th>
+                <th>Interest</th>
+                <th>Principal</th>
+                <th>Balance</th>
+            </tr>
+            {% for row in schedule %}
+            <tr>
+                <td>{{ row.Month }}</td>
+                <td>{{ row.Payment }}</td>
+                <td>{{ row.Date }}</td>
+                <td>{{ row.Interest }}</td>
+                <td>{{ row.Principal }}</td>
+                <td>{{ row['Remaining Balance'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="/">Back</a>
+        <form action="/download_csv" method="post">
+            <input type="hidden" name="schedule" value="{{ schedule }}">
+            <button type="submit">Download CSV</button>
+        </form>
+        
+    </body>
+
+</html>

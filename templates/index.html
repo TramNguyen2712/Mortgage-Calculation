@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
+        <title>Mortgage Calculator</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+    <body>
+        <h1>Welcome to the Mortgage Calculator</h1>
+        <p>Enter your mortgage details to calculate payment</p>
+        <form action="/calculate" method="post">
+            <label for="amount">Loan Amount:</label>
+            <input type="number" id="amount" name="amount" required><br>
+
+            <label for="rate">Interest Rate (%):</label>
+            <input type="number" id="rate" name="rate" step="0.01" required><br>
+
+            <label for="year">Loan Term (years):</label>
+            <input type="number" id="years" name="years" required placeholder="30, 15 or 20"><br>
+
+            <label for="Down">Down Payment ($):</label>
+            <input type="number" id="down" name="down"><br>
+
+            <label for="Down">Extra Payment Per Month ($):</label>
+            <input type="number" id="extra" name="extra"><br>
+
+            <label for="start_date">Start Date:</label>
+            <select id="start_month" name="start_month" required>
+                {% for month in range(1,13)%}
+                <option value="{{month}}">{{month}}</option>
+                {% endfor %}
+            </select>
+            <select id="start_year" name="start_year" required>
+                {% for year in range(2020, 2030)%}
+                <option value="{{year}}">{{year}}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Calculator</button>
+
+        </form>
+    </body>
+</html>
