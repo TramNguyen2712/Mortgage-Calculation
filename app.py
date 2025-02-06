@@ -151,23 +151,33 @@ def generate_line_chart(schedule):
     return base64.b64encode(img.getvalue()).decode('utf-8')
 
 @app.route('/calculate', methods=['POST'])
-def calculate():
+def handle_action():
+    action = request.form.get('action')  # Determine which button was clicked
+
+    if action == 'calculate':
+        return calculate(request)  # Call the calculate handler
+    elif action == 'compare':
+        return compare(request)  # Call the compare handler
+    else:
+        return "Invalid action."
+
+def calculate(request):
     try:
         # Get the values from the form
-        amount = float(request.form['amount'])
-        interest_rate = float(request.form['rate'])
-        years = int(request.form['years'])
-        down = float(request.form.get('down', 0))
-        extra = float(request.form.get('extra', 0))
-        start_month = request.form['start_month']
-        start_year = request.form['start_year']
+        amount1 = float(request.form['amount1'])
+        rate1 = float(request.form['rate1'])
+        years1 = int(request.form['years1'])
+        down1 = float(request.form.get('down1', 0))
+        extra1 = float(request.form.get('extra1', 0))
+        start_month1 = request.form['start_month1']
+        start_year1 = request.form['start_year1']
 
         # Calculate the interest
-        loan_amount = amount - down
+        loan_amount = amount1 - down1
         
-        monthly_payment = calculate_monthly_payment(loan_amount,interest_rate,years)
+        monthly_payment = calculate_monthly_payment(loan_amount,rate1,years1)
 
-        monthly_schedule,yearly_schedule,month_saved,total_interest_saved,total_interest,total_principal,final_month,final_year = amortization(loan_amount,extra,interest_rate,years,start_year,start_month)
+        monthly_schedule,yearly_schedule,month_saved,total_interest_saved,total_interest,total_principal,final_month,final_year = amortization(loan_amount,extra1,rate1,years1,start_year1,start_month1)
 
         pie_chart = generate_pie_chart(round(total_principal,2),round(total_interest,2))
 
@@ -175,12 +185,65 @@ def calculate():
 
         total_mortgage_payments = total_interest + loan_amount
         
-        return render_template('result.html', monthly_payment=round(monthly_payment,2), loan_amount = loan_amount, total_interest = round(total_interest,2), down = down, 
+        return render_template('result.html', monthly_payment=round(monthly_payment,2), loan_amount = loan_amount, total_interest = round(total_interest,2), down = down1, 
                                total_mortgage_payments = round(total_mortgage_payments,2), total_interest_saved=round(total_interest_saved, 2),month_saved = month_saved, monthly_schedule = monthly_schedule, 
                                yearly_schedule = yearly_schedule, final_month=final_month,final_year=final_year,pie_chart=pie_chart,line_chart=line_chart)
 
     except Exception as e:
         return f"Error: {e}"
+    
+def compare(request):
+    try:
+        # Scenario 1 Inputs
+        amount1 = float(request.form['amount1'])
+        rate1 = float(request.form['rate1'])
+        years1 = int(request.form['years1'])
+        down1 = float(request.form.get('down1', 0))
+        extra1 = float(request.form.get('extra1', 0))
+        start_month1 = request.form['start_month1']
+        start_year1 = request.form['start_year1']
+
+        # Scenario 2 Inputs
+        amount2 = float(request.form['amount2'])
+        rate2 = float(request.form['rate2'])
+        years2 = int(request.form['years2'])
+        down2 = float(request.form.get('down2', 0))
+        extra2 = float(request.form.get('extra2', 0))
+        start_month2 = request.form['start_month2']
+        start_year2= request.form['start_year2']
+
+        # Calculate for Scenario 1
+        loan_amount1 = amount1 - down1
+        monthly_payment1 = calculate_monthly_payment(loan_amount1, rate1, years1)
+        monthly_schedule1,yearly_schedule1,month_saved1,total_interest_saved1,total_interest1,total_principal1,final_month1,final_year1 = amortization(loan_amount1,extra1,rate1,years1,start_year1,start_month1)
+
+
+        # Calculate for Scenario 2
+        loan_amount2 = amount2 - down2
+        monthly_payment2 = calculate_monthly_payment(loan_amount2, rate2, years2)
+        monthly_schedule2,yearly_schedule2,month_saved2,total_interest_saved2,total_interest2,total_principal2,final_month2,final_year2 = amortization(loan_amount2,extra2,rate2,years2,start_year2,start_month2)
+
+
+        # Create charts for both scenarios
+        pie_chart1 = generate_pie_chart(total_principal1, total_interest1)
+        pie_chart2 = generate_pie_chart(total_principal2, total_interest2)
+
+        # Render the comparison results
+        return render_template(
+            'compare.html',
+            monthly_payment1=round(monthly_payment1, 2),
+            total_interest1=round(total_interest1, 2),
+            months_saved1=month_saved1,
+            pie_chart1=pie_chart1,
+
+            monthly_payment2=round(monthly_payment2, 2),
+            total_interest2=round(total_interest2, 2),
+            months_saved2=month_saved2,
+            pie_chart2=pie_chart2,
+        )
+    except Exception as e:
+        return f"Error: {e}"
+
 
 @app.route('/download_csv', methods=['POST'])
 

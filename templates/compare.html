@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compare Mortgage Scenarios</title>
+    <style>
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .comparison-table th, .comparison-table td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: center;
+        }
+        .comparison-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Compare Mortgage Scenarios</h1>
+
+    <table class="comparison-table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Scenario 1</th>
+                <th>Scenario 2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Monthly Payment</td>
+                <td>${{ monthly_payment1 }}</td>
+                <td>${{ monthly_payment2 }}</td>
+            </tr>
+            <tr>
+                <td>Total Interest Paid</td>
+                <td>${{ total_interest1 }}</td>
+                <td>${{ total_interest2 }}</td>
+            </tr>
+            <tr>
+                <td>Months Saved</td>
+                <td>{{ months_saved1 }} months</td>
+                <td>{{ months_saved2 }} months</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Principal vs Interest</h2>
+    <div style="display: flex; justify-content: space-around;">
+        <div>
+            <h3>Scenario 1</h3>
+            <img src="data:image/png;base64,{{ pie_chart1 }}" alt="Scenario 1 Pie Chart">
+        </div>
+        <div>
+            <h3>Scenario 2</h3>
+            <img src="data:image/png;base64,{{ pie_chart2 }}" alt="Scenario 2 Pie Chart">
+        </div>
+    </div>
+
+    <br>
+    <a href="/">Back to Home</a>
+</body>
+</html>
