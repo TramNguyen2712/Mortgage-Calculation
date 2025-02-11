@@ -5,22 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Compare Mortgage Scenarios</title>
     <style>
-        .comparison-table {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f1ec;
+            margin: 0 auto;
+            padding: 0 1em;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+       
+        
+        table {
             width: 100%;
             border-collapse: collapse;
         }
-        .comparison-table th, .comparison-table td {
-            border: 1px solid black;
+        table, th, td {
+            border: 2px solid black;
             padding: 8px;
             text-align: center;
         }
-        .comparison-table th {
-            background-color: #f2f2f2;
+        th {
+            background-color: #83b8a1;
+            text-transform: uppercase;
+            color: black;
+        }
+        tbody tr:nth-child(even){
+            background-color: #d8d8d8;
+        }
+        .left{
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        img{
+            width: 80%;
         }
     </style>
 </head>
 <body>
-    <h1>Compare Mortgage Scenarios</h1>
+    <h1 style="font-size: 20px;">Compare Mortgage Scenarios</h1>
 
     <table class="comparison-table">
         <thead>
@@ -32,25 +55,30 @@
         </thead>
         <tbody>
             <tr>
-                <td>Monthly Payment</td>
+                <td class="left">Monthly Payment</td>
                 <td>${{ monthly_payment1 }}</td>
                 <td>${{ monthly_payment2 }}</td>
             </tr>
             <tr>
-                <td>Total Interest Paid</td>
+                <td class="left">Total Interest Paid</td>
                 <td>${{ total_interest1 }}</td>
                 <td>${{ total_interest2 }}</td>
             </tr>
             <tr>
-                <td>Months Saved</td>
+                <td class="left">Months Saved</td>
                 <td>{{ months_saved1 }} months</td>
                 <td>{{ months_saved2 }} months</td>
+            </tr>
+            <tr>
+                <td class="left">Mortgage Payoff Date</td>
+                <td>{{final_month1}}. {{final_year1}}</td>
+                <td>{{final_month2}}. {{final_year2}}</td>
             </tr>
         </tbody>
     </table>
 
     <h2>Principal vs Interest</h2>
-    <div style="display: flex; justify-content: space-around;">
+    <div style="display: flex; justify-content: space-around; align-items: center;">
         <div>
             <h3>Scenario 1</h3>
             <img src="data:image/png;base64,{{ pie_chart1 }}" alt="Scenario 1 Pie Chart">
@@ -63,5 +91,54 @@
 
     <br>
     <a href="/">Back to Home</a>
+    <div style="display: flex; justify-content: space-around; margin-top: 2em;">
+        <div>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Total Interest Paid</th>
+                        <th>Total Principal Paid</th>
+                        <th>Remaining Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in yearly_schedule1 %}
+                    <tr>
+                        <td>{{ row.Year }}</td>
+                        <td>${{ row["Total Interest"] }}</td>
+                        <td>${{ row["Total Principal"] }}</td>
+                        <td>${{ row["Remaining Balance"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+        <div>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Total Interest Paid</th>
+                        <th>Total Principal Paid</th>
+                        <th>Remaining Balance</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in yearly_schedule2 %}
+                    <tr>
+                        <td>{{ row.Year }}</td>
+                        <td>${{ row["Total Interest"] }}</td>
+                        <td>${{ row["Total Principal"] }}</td>
+                        <td>${{ row["Remaining Balance"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>                
+        </div>
+
+    </div>
 </body>
 </html>

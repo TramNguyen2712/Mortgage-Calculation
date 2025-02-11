@@ -8,96 +8,121 @@
         <link rel="stylesheet" href="/static/style.css">
     </head>
     <body>
-        <div class="form-container">
+        <header>
             <h1>Mortgage Calculator</h1>
-            <form action="/calculate" method="post">
-                <!-- Scenario 1 Inputs -->
-                <div class="form-group">
-                    <label for="amount1">House Price:</label>
-                    <input type="number" id="amount1" name="amount1" required>
-                </div>
-                <div class="form-group">
-                    <label for="down1">Down Payment:</label>
-                    <input type="number" id="down1" name="down1" required>
-                </div>
-                <div class="form-group">
-                    <label for="rate1">Interest:</label>
-                    <input type="number" id="rate1" name="rate1" step="0.01" required>
-                </div>
-                <div class="form-group">
-                    <label for="years1">Years:</label>
-                    <input type="number" id="years1" name="years1" required>
-                </div>
-                <div class="form-group">
-                    <label for="extra1">Extra Payment Per Month:</label>
-                    <input type="number" id="extra1" name="extra1" step="0.01" value="0">
-                </div>
-                <div class="form-group">
-                    <label for="start_date1">Start Date:</label>
-                    <select id="start_month1" name="start_month1" required>
-                    {% for month in range(1,13)%}
-                    <option value="{{month}}">{{month}}</option>
-                    {% endfor %}
-                    </select>
-                    <select id="start_year1" name="start_year1" required>
-                        {% for year in range(2020, 2030)%}
-                        <option value="{{year}}">{{year}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-    
-                <!-- Compare Two Scenarios Checkbox -->
-                <div class="form-group">
-                    <input type="checkbox" id="compare" name="compare" onchange="toggleScenario2()">
-                    <label for="compare">Compare Two Scenarios</label>
-                </div>
-    
-                <!-- Scenario 2 Inputs (Hidden by Default) -->
-                <div id="scenario2" class="hidden">
-                    <div class="form-group">
-                        <label for="amount2">House Price:</label>
-                        <input type="number" id="amount2" name="amount2">
+        </header>
+        <main>
+            
+            <div class="form-container">
+                <form action="/calculate" method="post">
+                    <!-- Scenario 1 Inputs -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="amount1">House Price:</label>
+                            <input type="number" id="amount1" name="amount1"  min="10000" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="down1">Down Payment:</label>
+                            <input type="number" id="down1" name="down1" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="rate1">Interest:</label>
+                            <input type="number" id="rate1" name="rate1" step="0.01" min="1" max="30" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="down2">Down Payment:</label>
-                        <input type="number" id="down2" name="down2">
-                    </div>
-                    <div class="form-group">
-                        <label for="rate2">Interest:</label>
-                        <input type="number" id="rate2" name="rate2" step="0.01">
-                    </div>
-                    <div class="form-group">
-                        <label for="years2">Years:</label>
-                        <input type="number" id="years2" name="years2">
-                    </div>
-                    <div class="form-group">
-                        <label for="extra2">Extra Payment Per Month:</label>
-                        <input type="number" id="extra2" name="extra2" step="0.01" value="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="start_date2">Start Date:</label>
-                        <select id="start_month2" name="start_month2" required>
-                        {% for month in range(1,13)%}
-                        <option value="{{month}}">{{month}}</option>
-                        {% endfor %}
-                        </select>
-                        <select id="start_year2" name="start_year2" required>
-                            {% for year in range(2020, 2030)%}
-                            <option value="{{year}}">{{year}}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-    
-                <!-- Submit Button -->
-                <!-- Form Buttons -->
-                <button id="calculateButton" type="submit" name="action" value="calculate">Calculate</button>
-                <button id="compareButton" type="submit" name="action" value="compare" class="hidden">Compare</button>
 
-            </form>
-        </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="years1">Years:</label>
+                            <input type="number" id="years1" name="years1" min="15" max="30" placeholder="15, 20, or 30" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="extra1">Extra Payment Per Month:</label>
+                            <input type="number" id="extra1" name="extra1" step="0.01" value="0" min="0" >
+                        </div>
+                        <div class="form-group">
+                            <label class="start_date" for="start_date1">Start Date:</label>
+                            <div class="date-picker">
+                                <select id="start_month1" name="start_month1" required>
+                                {% for month in range(1,13)%}
+                                <option value="{{month}}">{{month}}</option>
+                                {% endfor %}
+                                </select>
+                                <select id="start_year1" name="start_year1" required>
+                                    {% for year in range(2020, 2030)%}
+                                    <option value="{{year}}">{{year}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>    
+                    </div>   
+                    
+                    
+
+                    <!-- Compare Two Scenarios Checkbox -->
+                    <div class="form-group-checkbox">
+                        <input type="checkbox" id="compare" name="compare" onchange="toggleScenario2()">
+                        <label for="compare">Compare Two Scenarios</label>
+                    </div>
+        
+                    <!-- Scenario 2 Inputs (Hidden by Default) -->
+                    <div id="scenario2" class="hidden">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="amount2">House Price:</label>
+                                <input type="number" id="amount2" name="amount2" min="10000" >
+                            </div>
+                            <div class="form-group">
+                                <label for="down2">Down Payment:</label>
+                                <input type="number" id="down2" name="down2" min="0" >
+                            </div>
+                            <div class="form-group">
+                                <label for="rate2">Interest:</label>
+                                <input type="number" id="rate2" name="rate2" step="0.01" min="0" max="10" >
+                            </div>
+                        </div>
     
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="years2">Years:</label>
+                                <input type="number" id="years2" name="years2" min="15" max="30" placeholder="15, 20, or 30" >
+                            </div>
+                            <div class="form-group">
+                                <label for="extra2">Extra Payment Per Month:</label>
+                                <input type="number" id="extra2" name="extra2" step="0.01" value="0" >
+                            </div>
+                            <div class="form-group">
+                                <label class="start_date" for="start_date2">Start Date:</label>
+                                <div class="date-picker">
+                                    <select id="start_month2" name="start_month2" >
+                                    {% for month in range(1,13)%}
+                                    <option value="{{month}}">{{month}}</option>
+                                    {% endfor %}
+                                    </select>
+                                    <select id="start_year2" name="start_year2" >
+                                        {% for year in range(2020, 2030)%}
+                                        <option value="{{year}}">{{year}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>    
+                        </div>
+                    </div>
+        
+                    <!-- Submit Button -->
+                    <!-- Form Buttons -->
+                    <button id="calculateButton" type="submit" name="action" value="calculate">Calculate</button>
+                    <button id="compareButton" type="submit" name="action" value="compare" class="hidden">Compare</button>
+
+                </form>
+            
+            </div>
+            <div class="image-container">
+                <img src="/static/home.png" alt="House Image">
+            </div>
+        </main>    
         <script>
+           
             function toggleScenario2() {
                 const scenario2 = document.getElementById('scenario2');
                 const compareCheckbox = document.getElementById('compare');
@@ -108,6 +133,16 @@
                     scenario2.classList.remove('hidden');
                     compareButton.classList.remove('hidden');
                     calculateButton.classList.add('hidden');
+
+                    // Automatically fill Scenario 2 with Scenario 1 values
+                    document.getElementById('amount2').value = document.getElementById('amount1').value;
+                    document.getElementById('down2').value = document.getElementById('down1').value;
+                    document.getElementById('rate2').value = document.getElementById('rate1').value;
+                    document.getElementById('years2').value = document.getElementById('years1').value;
+                    document.getElementById('extra2').value = document.getElementById('extra1').value;
+                    document.getElementById('start_month2').value = document.getElementById('start_month1').value;
+                    document.getElementById('start_year2').value = document.getElementById('start_year1').value;
+                
                 } else {
                     scenario2.classList.add('hidden');
                     compareButton.classList.add('hidden');

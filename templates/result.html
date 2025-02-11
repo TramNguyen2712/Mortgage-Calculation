@@ -5,89 +5,101 @@
         <meta charset="UTF-8">
         <meta name="viewpoint" content="width=device-width, initial-scale=1.0">
         <title>Mortgage Monthly Payment Result</title>
+        <link rel="stylesheet" href="/static/result-style.css">
     </head>
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table, th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
     <body>
-        <h1>Mortgage Payment Details</h1>
-        <p><strong>Monthly_payment ${{monthly_payment}}</strong></p>
-        <p>Loan Amount: ${{loan_amount}}</p>
-        <p>Total Interest: ${{total_interest}}</p>
-        <p>Down Payment: ${{down}}</p>
-        <p>Total Mortgage Payments: ${{total_mortgage_payments}}</p>
-        <p>Mortgage Payoff Date: {{final_month}}. {{final_year}}</p>
-
-        <h3>Principal vs Interest</h3>
-        <img src="data:image/png;base64,{{pie_chart}}" alt="Principal vs Interest Pie Chart">
-
-        <h3>Loan Progress</h3>
-        <img src="data:image/png;base64,{{line_chart}}" alt="Loan Progress">
-
+        <header>
+            <h1>Mortgage Monthly Payment Result</h1>
+        </header>
+        <div class="summary-container">
+            <div class="summary">
+                <p style="font-size: 19px;"><strong>Monthly Payment: ${{monthly_payment}}</strong></p>
+                <p>Loan Amount: ${{loan_amount}}</p>
+                <p>Total Interest: ${{total_interest}}</p>
+                <p>Down Payment: ${{down}}</p>
+                <p>Total Mortgage Payments: ${{total_mortgage_payments}}</p>
+                <p>Mortgage Payoff Date: {{final_month}}. {{final_year}}</p>
+            </div>
+            <div class="pie-chart">
+                <h3>Principal vs Interest</h3>
+                <img src="data:image/png;base64,{{pie_chart}}" alt="Principal vs Interest Pie Chart">
+            </div>
+            <div class="line-chart">
+                <h3>Loan Progress</h3>
+                <img src="data:image/png;base64,{{line_chart}}" alt="Loan Progress">
+            </div>
+        </div>
+        <div class="button-container"> 
+            <div class="button">
+                <button onclick="location.href='/'" type = "button">Back</button>
+            </div>
+            <div class="button">
+            <form action="/download_csv" method="post">
+                <input type="hidden" name="schedule_type" value="yearly">
+                <input type="hidden" name="schedule" value="{{ yearly_schedule }}">
+                <button type="submit">Download Yearly CSV</button>
+            </form>  
+            </div>
+            <div class="button">
+                <form action="/download_csv" method="post">
+                    <input type="hidden" name="schedule_type" value="monthly">
+                    <input type="hidden" name="schedule" value="{{ monthly_schedule }}">
+                    <button type="submit">Download Monthly CSV</button>
+                </form>
+            </div>
+           
+        </div> 
         
-        <h2>Yearly Amortization Schedule</h2>
-        <table border="1">
-            <tr>
-                <th>Year</th>
-                <th>Total Interest Paid</th>
-                <th>Total Principal Paid</th>
-                <th>Remaining Balance</th>
-            </tr>
-            {% for row in yearly_schedule %}
-            <tr>
-                <td>{{ row.Year }}</td>
-                <td>${{ row["Total Interest"] }}</td>
-                <td>${{ row["Total Principal"] }}</td>
-                <td>${{ row["Remaining Balance"] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        
-        <h2>Monthly Amortization Schedule</h2>
-        <table border="1">
-            <tr>
-                <th>Month</th>
-                <th>Payment</th>
-                <th>Date</th>
-                <th>Interest</th>
-                <th>Principal</th>
-                <th>Balance</th>
-            </tr>
-            {% for row in monthly_schedule %}
-            <tr>
-                <td>{{ row.Month }}</td>
-                <td>{{ row.Payment }}</td>
-                <td>{{ row.Date }}</td>
-                <td>{{ row.Interest }}</td>
-                <td>{{ row.Principal }}</td>
-                <td>{{ row['Remaining Balance'] }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-        <a href="/">Back</a>
-        <form action="/download_csv" method="post">
-            <input type="hidden" name="schedule_type" value="monthly">
-            <input type="hidden" name="schedule" value="{{ monthly_schedule }}">
-            <button type="submit">Download Monthly CSV</button>
-        </form>
-        
-        <form action="/download_csv" method="post">
-            <input type="hidden" name="schedule_type" value="yearly">
-            <input type="hidden" name="schedule" value="{{ yearly_schedule }}">
-            <button type="submit">Download Yearly CSV</button>
-        </form>
-        
+        <div class="table-container">
+            <h2>Yearly Amortization Schedule</h2>
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Year</th>
+                            <th>Total Interest Paid</th>
+                            <th>Total Principal Paid</th>
+                            <th>Remaining Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in yearly_schedule %}
+                        <tr>
+                            <td>{{ row.Year }}</td>
+                            <td>${{ row["Total Interest"]  }}</td>
+                            <td>${{ row["Total Principal"] }}</td>
+                            <td>${{ row["Remaining Balance"] }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            
+            <h2>Monthly Amortization Schedule</h2>
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Payment</th>
+                        <th>Date</th>
+                        <th>Interest</th>
+                        <th>Principal</th>
+                        <th>Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in monthly_schedule %}
+                    <tr>
+                        <td>{{ row.Month }}</td>
+                        <td>{{ row.Payment }}</td>
+                        <td>{{ row.Date }}</td>
+                        <td>{{ row.Interest }}</td>
+                        <td>{{ row.Principal }}</td>
+                        <td>{{ row['Remaining Balance'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>   
         
     </body>
 
