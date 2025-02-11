@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, Response
-from datetime import datetime, timedelta
+from datetime import datetime
 import pandas as pd
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas 
